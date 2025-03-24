@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+
+jobs:
+  build-and-publish:
+    name: Build and Publish Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        target: wasm32-unknown-unknown
+        override: true
+
+    - name: Install Clippy
+      run: rustup component add clippy
+
+    - name: Install Rustfmt
+      run: rustup component add rustfmt
+
+    - name: Install rust-src component
+      run: rustup component add rust-src --toolchain stable-x86_64-unknown-linux-gnu
+
+    - name: Check formatting
+      run: cargo fmt --all --check
+
+    - name: Run Clippy
+      run: cargo clippy -r --all -- -D warnings
+
+    - name: Prepare environment
+      run: |
+        mkdir -p target/tmp
+        curl -L https://get.gear.rs/gear-v1.6.1-x86_64-unknown-linux-gnu.tar.xz -o - | tar xJ -C target/tmp
+
+    - name: Run tests
+      run: cargo test -r --all -- --ignored
+
+    - name: Build project
+      run: cargo build --release
+
+    - name: Prepare artifacts directory
+      run: |
+        mkdir -p artifacts
+        cp target/wasm32-unknown-unknown/release/*.wasm artifacts/
+        cp target/wasm32-unknown-unknown/release/*.idl artifacts/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wasm-artifacts
+        path: artifacts/
