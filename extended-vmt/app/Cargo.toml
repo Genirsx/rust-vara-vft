@@ -1,0 +1,9 @@
+[package]
+name = "extended-vmt-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sails-rs.workspace = true
+gstd.workspace = true
+vmt-service = { path = "../../vmt-service" }

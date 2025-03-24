@@ -1,0 +1,9 @@
+[package]
+name = "extended-vft-app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+sails-rs.workspace = true
+gstd.workspace = true
+vft-service = { path = "../../vft-service" }

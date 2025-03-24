@@ -1,0 +1,24 @@
+[package]
+name = "extended-vft"
+version.workspace = true
+license.workspace = true
+edition.workspace = true
+
+[dependencies]
+extended-vft-app = { path = "app" }
+
+[build-dependencies]
+extended-vft-app = { path = "app" }
+sails-rs = { workspace = true, features = ["wasm-builder"] }
+sails-idl-gen.workspace = true
+
+[dev-dependencies]
+extended-vft = { path = ".", features = ["wasm-binary"] }
+extended-vft-client = { path = "client" }
+sails-rs = { workspace = true, features = ["gtest"] }
+tokio.workspace = true
+gclient.workspace = true
+gear-core.workspace = true
+
+[features]
+wasm-binary = []
